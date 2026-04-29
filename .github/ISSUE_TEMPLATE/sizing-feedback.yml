@@ -1,0 +1,55 @@
+name: Sizing Feedback
+description: Report a bucket range that consistently doesn't match your team's reality.
+title: "[Sizing] <bucket> feels <too high / too low> for <context>"
+labels: ["sizing", "feedback"]
+body:
+  - type: dropdown
+    id: bucket
+    attributes:
+      label: Which bucket?
+      options:
+        - XS
+        - S
+        - M
+        - L
+        - XL
+        - "??"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: direction
+    attributes:
+      label: In which direction is it wrong?
+      options:
+        - Range is too low (real costs land above)
+        - Range is too high (real costs land below)
+        - Range is too wide (variance hidden inside)
+        - Range is too narrow (real tasks straddle the boundary)
+    validations:
+      required: true
+
+  - type: textarea
+    id: data
+    attributes:
+      label: Your data
+      description: What does your real-cost distribution look like for this bucket?
+      placeholder: "Median: $XX. IQR: $YY–$ZZ. Sample: NN tasks."
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What might explain the divergence? (codebase, model mix, team setup)
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal (optional)
+      description: If you have one, what would the bucket range look like instead?
+    validations:
+      required: false

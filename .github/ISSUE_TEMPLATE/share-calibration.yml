@@ -1,0 +1,117 @@
+name: Share Calibration Data
+description: Contribute your team's calibrated TokenPoints numbers to the community reference.
+title: "[Calibration] <short label for your context>"
+labels: ["calibration", "community-data"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for sharing! Anonymized team calibration data is the most valuable contribution to TokenPoints. Please do not include individual task descriptions, per-developer numbers, or anything proprietary about your project.
+
+  - type: input
+    id: team_size
+    attributes:
+      label: Team size
+      description: Roughly how many engineers using TokenPoints?
+      placeholder: "e.g., 5"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: language
+    attributes:
+      label: Primary language / stack
+      options:
+        - JavaScript / TypeScript
+        - Python
+        - Go
+        - Java / Kotlin
+        - Ruby
+        - Rust
+        - C# / .NET
+        - PHP
+        - Other / Mixed
+    validations:
+      required: true
+
+  - type: dropdown
+    id: codebase_size
+    attributes:
+      label: Codebase size
+      options:
+        - Small (< 50kloc)
+        - Medium (50–500kloc)
+        - Large (500kloc – 2Mloc)
+        - Very large (> 2Mloc)
+    validations:
+      required: true
+
+  - type: input
+    id: model_mix
+    attributes:
+      label: Model mix
+      description: Rough percentage breakdown
+      placeholder: "e.g., 70% Sonnet, 25% Opus, 5% Haiku"
+    validations:
+      required: true
+
+  - type: textarea
+    id: medians
+    attributes:
+      label: Median real cost per bucket
+      description: Median USD per size bucket from your tracked tasks
+      placeholder: |
+        XS: $0.40
+        S: $5.20
+        M: $32
+        L: $180
+        XL: (insufficient data)
+    validations:
+      required: true
+
+  - type: textarea
+    id: iqr
+    attributes:
+      label: Interquartile range per bucket (optional)
+      placeholder: |
+        XS: $0.20–$0.65
+        S: $2.10–$6.80
+        ...
+    validations:
+      required: false
+
+  - type: textarea
+    id: outcomes
+    attributes:
+      label: Outcome distribution
+      placeholder: |
+        merged_clean: 72%
+        merged_with_rework: 22%
+        reverted: 4%
+        abandoned: 2%
+    validations:
+      required: false
+
+  - type: input
+    id: sample_size
+    attributes:
+      label: Number of tasks tracked
+      placeholder: "e.g., 47"
+    validations:
+      required: true
+
+  - type: input
+    id: calibration_age
+    attributes:
+      label: How long have you been calibrating?
+      placeholder: "e.g., 4 sprints"
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes / context
+      description: Anything that helps interpret the numbers — e.g., "we have an unusually well-tested codebase," "we just adopted Cursor," etc.
+    validations:
+      required: false

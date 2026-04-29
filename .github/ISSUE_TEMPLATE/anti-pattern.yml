@@ -1,0 +1,46 @@
+name: Anti-pattern Report
+description: Report a TokenPoints misuse you saw in the wild.
+title: "[Anti-pattern] <short label>"
+labels: ["anti-pattern"]
+body:
+  - type: textarea
+    id: pattern
+    attributes:
+      label: The pattern
+      description: What did you see happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: why_happened
+    attributes:
+      label: Why did it happen?
+      description: What conditions / pressures led to it?
+    validations:
+      required: true
+
+  - type: textarea
+    id: damage
+    attributes:
+      label: What did it break?
+      description: How did it degrade the framework's usefulness?
+    validations:
+      required: true
+
+  - type: textarea
+    id: fix
+    attributes:
+      label: What fixed it (or would fix it)?
+    validations:
+      required: false
+
+  - type: dropdown
+    id: existing
+    attributes:
+      label: Is this already covered in docs/anti-patterns.md?
+      options:
+        - "No — new pattern"
+        - "Partially — needs more detail"
+        - "Yes — but the doc could be sharper"
+    validations:
+      required: true

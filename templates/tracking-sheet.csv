@@ -1,0 +1,4 @@
+task_id,title,size_estimated,cost_estimated_low,cost_estimated_expected,cost_estimated_high,model_planned,human_time_estimated_hours,cost_real,tokens_in,tokens_out,model_actual,turns,human_time_real_hours,outcome,bug_30d,variance_reason,completed_at,notes
+EXAMPLE-001,Add CSV export to admin panel,M,12,25,60,sonnet,4,28.40,1850000,42000,sonnet,22,5.5,merged_clean,false,,2026-04-15,
+EXAMPLE-002,Refactor session middleware,L,50,110,240,opus-mix,12,165.20,2400000,95000,sonnet+opus,67,14,merged_with_rework,false,JWT logic required Opus escalation mid-session; refinement step missed the legacy cookie path,2026-04-18,
+EXAMPLE-003,Fix typo in onboarding email,XS,0.20,0.50,1.20,haiku,0.5,0.35,28000,800,haiku,2,0.5,merged_clean,false,,2026-04-19,
