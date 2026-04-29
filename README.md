@@ -1,5 +1,10 @@
 # TokenPoints
 
+[![Website](https://img.shields.io/badge/website-tokenpoints-2563eb)](https://rogerio-grocers.github.io/tokenpoints/)
+[![License](https://img.shields.io/badge/license-CC%20BY%204.0-16a34a)](LICENSE)
+[![Status](https://img.shields.io/badge/status-v0.1%20draft-ea580c)](#status)
+[![Methodology](https://img.shields.io/badge/methodology-open--source-525252)](MANIFESTO.md)
+
 *Read this in [Português (Brasil)](README.pt-BR.md).*
 
 > **Story points are dead. Long live TokenPoints.**
