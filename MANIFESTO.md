@@ -1,5 +1,7 @@
 # The TokenPoints Manifesto
 
+*Read this in [Português (Brasil)](MANIFESTO.pt-BR.md).*
+
 > Story points are dead. Long live TokenPoints.
 
 For two decades, software teams estimated work in story points — an abstract, unfalsifiable unit invented to dodge the obvious failures of hour estimates. It worked, sort of, when humans wrote every line of code.

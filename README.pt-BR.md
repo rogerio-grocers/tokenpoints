@@ -1,5 +1,7 @@
 # TokenPoints
 
+*Read this in [English](README.md).*
+
 > **Story points estão mortos. Longa vida aos TokenPoints.**
 
 Um framework para estimar trabalho de software em **dólares de inferência de LLM**, não em horas ou story points.
@@ -33,7 +35,7 @@ TokenPoints é um vocabulário de planejamento construído em torno desse númer
 
 ## Início rápido
 
-1. Leia o **[Manifesto](MANIFESTO.md)** (5 min). Se você discordar, este framework não é para você e tudo bem.
+1. Leia o **[Manifesto](MANIFESTO.pt-BR.md)** (5 min). Se você discordar, este framework não é para você e tudo bem.
 2. Folheie o **[Guia de Dimensionamento](docs/sizing-guide.md)** para internalizar a escala XS–XL.
 3. Use o **[modelo de estimativa](templates/estimation-template.md)** nas suas próximas 10 tarefas. Não mude mais nada ainda.
 4. Após dois sprints, execute a **[calibração](docs/calibration.md)** com seus dados reais.
@@ -70,7 +72,7 @@ Essas faixas são **âncoras iniciais**, não leis. Sua equipe divergirá basead
 5. **Multidimensional, não unidimensional.**
 6. **Tempo humano ainda existe.**
 
-Elaboração completa: **[MANIFESTO.md](MANIFESTO.md)**.
+Elaboração completa: **[MANIFESTO.pt-BR.md](MANIFESTO.pt-BR.md)**.
 
 ---
 
@@ -78,9 +80,10 @@ Elaboração completa: **[MANIFESTO.md](MANIFESTO.md)**.
 
 ```
 tokenpoints/
-├── README.md                       ← você está aqui
-├── README-PT.md                    ← tradução em português
-├── MANIFESTO.md                    ← os 6 pilares
+├── README.md                       ← versão em inglês
+├── README.pt-BR.md                  ← você está aqui
+├── MANIFESTO.md                    ← os 6 pilares (inglês)
+├── MANIFESTO.pt-BR.md               ← os 6 pilares (português)
 ├── docs/
 │   ├── framework.md                ← visão geral end-to-end
 │   ├── sizing-guide.md             ← XS–XL com exemplos trabalhados

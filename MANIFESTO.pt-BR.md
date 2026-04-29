@@ -2,7 +2,7 @@
 
 > Story points estão mortos. Longa vida aos TokenPoints.
 
-Por duas décadas, equipes de software estimaram trabalho em story points — uma unidade abstrata e não falseável inventada para evasionar os fracassos óbvios das estimativas em horas. Funcionou, mais ou menos, quando humanos escreviam cada linha de código.
+Por duas décadas, equipes de software estimaram trabalho em story points — uma unidade abstrata e não falseável inventada para contornar os fracassos óbvios das estimativas em horas. Funcionou, mais ou menos, quando humanos escreviam cada linha de código.
 
 Esse mundo se foi.
 
@@ -16,7 +16,7 @@ Essa pergunta tem uma resposta real em dólares. Propomos usar isso.
 
 ### 1. Dólares são mais honestos que horas.
 
-Um dólar de inferência é um fato mensurável, falseável e não negociável. Uma estimativa de hora é um contrato social negociado sob pressão. Um story point é uma vibe com fantasía.
+Um dólar de inferência é um fato mensurável, falseável e não negociável. Uma estimativa de hora é um contrato social negociado sob pressão. Um story point é uma vibe vestida de fantasia.
 
 Quando o agente escreve o código, o custo de produzir esse código não é mais um palpite — é um número na fatura da API. Use-o.
 
@@ -75,7 +75,7 @@ Uma tarefa que custou $4 e entregou limpa é um animal diferente de uma tarefa q
 
 ### 6. Tempo humano ainda existe.
 
-LLMs atualmente não fazem descoberta de produto, alinhamento de stakeholders, revisão de código, orquestração de deployment, resposta on-call, ou as dezenas de outras coisas que transformam um diff funcionando em valor entregue. fingir o contrário produz estimativas perigosamente baixas.
+LLMs atualmente não fazem descoberta de produto, alinhamento de stakeholders, revisão de código, orquestração de deployment, resposta on-call, ou as dezenas de outras coisas que transformam um diff funcionando em valor entregue. Fingir o contrário produz estimativas perigosamente baixas.
 
 TokenPoints estima o *custo de inferência de produzir a mudança.* Ele **não** estima:
 

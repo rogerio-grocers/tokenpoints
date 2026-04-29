@@ -1,5 +1,7 @@
 # TokenPoints
 
+*Read this in [Português (Brasil)](README.pt-BR.md).*
+
 > **Story points are dead. Long live TokenPoints.**
 
 A framework for estimating software work in **dollars of LLM inference**, not hours or story points.
