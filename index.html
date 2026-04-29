@@ -110,6 +110,25 @@ header {
   color: var(--text);
 }
 
+.nav-links .lang-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  transition: all 0.15s;
+}
+
+.nav-links .lang-link:hover {
+  border-color: var(--text);
+  color: var(--text);
+}
+
 .nav-links .github-link {
   display: inline-flex;
   align-items: center;
@@ -493,6 +512,7 @@ section[id] {
         <a href="#scale" class="desktop-only">Scale</a>
         <a href="#faq">FAQ</a>
         <a href="#contribute">Contribute</a>
+        <a href="https://github.com/rogerio-grocers/tokenpoints/blob/main/README.pt-BR.md" class="lang-link" title="Ler em português">PT</a>
         <a href="https://github.com/rogerio-grocers/tokenpoints" class="github-link">GitHub →</a>
       </div>
     </nav>
