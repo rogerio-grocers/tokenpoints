@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="A framework for estimating software work in dollars of LLM inference, not hours or story points.">
+<meta property="og:title" content="TokenPoints — Story points are dead.">
+<meta property="og:description" content="Estimate software work in dollars of LLM inference, not hours or story points. Open source, CC BY 4.0.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://rogerio-grocers.github.io/tokenpoints/">
+<meta name="twitter:card" content="summary_large_image">
+<title>TokenPoints — Story points are dead.</title>
+
+<style>
+:root {
+  --bg: #ffffff;
+  --bg-subtle: #fafafa;
+  --text: #0a0a0a;
+  --text-muted: #525252;
+  --text-faint: #a3a3a3;
+  --border: #e5e5e5;
+  --border-subtle: #f0f0f0;
+  --accent: #16a34a;
+  --accent-bg: #f0fdf4;
+  --strike: #dc2626;
+  --code-bg: #f5f5f5;
+  --shadow: 0 1px 3px rgba(0,0,0,0.04);
+  --radius: 8px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Header */
+header {
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 20px 0;
+  position: sticky;
+  top: 0;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 50;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 17px;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: -0.01em;
+}
+
+.brand-mark {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  line-height: 26px;
+  text-align: center;
+  background: var(--accent);
+  color: white;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+}
+
+.nav-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 15px;
+  transition: color 0.15s;
+}
+
+.nav-links a:hover {
+  color: var(--text);
+}
+
+.nav-links .github-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: var(--text);
+  color: white;
+  border-radius: var(--radius);
+  font-weight: 500;
+  font-size: 14px;
+  transition: opacity 0.15s;
+}
+
+.nav-links .github-link:hover {
+  opacity: 0.85;
+  color: white;
+}
+
+@media (max-width: 640px) {
+  .nav-links { gap: 16px; }
+  .nav-links .desktop-only { display: none; }
+}
+
+/* Hero */
+.hero {
+  padding: 80px 0 60px;
+  text-align: left;
+}
+
+.hero h1 {
+  font-size: 56px;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  margin-bottom: 24px;
+}
+
+.hero h1 .strike {
+  text-decoration: line-through;
+  text-decoration-thickness: 4px;
+  text-decoration-color: var(--strike);
+  color: var(--text-faint);
+}
+
+.hero .lede {
+  font-size: 21px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  max-width: 640px;
+  margin-bottom: 36px;
+}
+
+.hero .ctas {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: var(--radius);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 15px;
+  transition: all 0.15s;
+  border: 1px solid transparent;
+}
+
+.btn-primary {
+  background: var(--text);
+  color: white;
+}
+
+.btn-primary:hover {
+  opacity: 0.88;
+}
+
+.btn-secondary {
+  background: white;
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.btn-secondary:hover {
+  border-color: var(--text);
+}
+
+.meta-line {
+  margin-top: 32px;
+  font-size: 14px;
+  color: var(--text-faint);
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.meta-line span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+@media (max-width: 640px) {
+  .hero { padding: 50px 0 40px; }
+  .hero h1 { font-size: 38px; }
+  .hero .lede { font-size: 18px; }
+}
+
+/* Section */
+section {
+  padding: 60px 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.section-label {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  margin-bottom: 20px;
+}
+
+.section-intro {
+  font-size: 18px;
+  color: var(--text-muted);
+  margin-bottom: 36px;
+  max-width: 640px;
+}
+
+.section-intro p + p {
+  margin-top: 14px;
+}
+
+@media (max-width: 640px) {
+  section { padding: 44px 0; }
+  .section-title { font-size: 28px; }
+}
+
+/* Scale table */
+.scale {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-top: 12px;
+}
+
+.scale-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 140px;
+  align-items: center;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 16px;
+}
+
+.scale-row:last-child { border-bottom: none; }
+
+.scale-row.head {
+  background: var(--bg-subtle);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+  font-weight: 600;
+  padding: 12px 22px;
+}
+
+.size {
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: -0.01em;
+}
+
+.size-XS { color: #2563eb; }
+.size-S  { color: #16a34a; }
+.size-M  { color: #ca8a04; }
+.size-L  { color: #ea580c; }
+.size-XL { color: #dc2626; }
+.size-Q  { color: var(--text-faint); }
+
+.pattern {
+  color: var(--text);
+}
+
+.cost {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color: var(--text);
+  font-weight: 600;
+  text-align: right;
+  font-size: 15px;
+}
+
+.scale-note {
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+@media (max-width: 640px) {
+  .scale-row {
+    grid-template-columns: 60px 1fr 100px;
+    padding: 14px 16px;
+    font-size: 14px;
+  }
+  .scale-row.head { padding: 10px 16px; }
+}
+
+/* FAQ */
+.faq-item {
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 22px 0;
+}
+
+.faq-item:first-child { padding-top: 8px; }
+.faq-item:last-child { border-bottom: none; }
+
+.faq-q {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 10px;
+  letter-spacing: -0.01em;
+}
+
+.faq-a {
+  font-size: 16px;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
+.faq-a a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent-bg);
+  transition: border-color 0.15s;
+}
+
+.faq-a a:hover {
+  border-bottom-color: var(--accent);
+}
+
+.faq-a code {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.92em;
+  background: var(--code-bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--text);
+}
+
+/* Contribute */
+.contribute-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.contribute-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.15s;
+  display: flex;
+  flex-direction: column;
+}
+
+.contribute-card:hover {
+  border-color: var(--text);
+  transform: translateY(-1px);
+}
+
+.contribute-card .icon {
+  font-size: 22px;
+  margin-bottom: 12px;
+  display: inline-block;
+  width: 36px;
+  height: 36px;
+  line-height: 34px;
+  text-align: center;
+  background: var(--accent-bg);
+  border-radius: 8px;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.contribute-card h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.contribute-card p {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  flex: 1;
+}
+
+.contribute-card .arrow {
+  margin-top: 14px;
+  font-size: 14px;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+@media (max-width: 720px) {
+  .contribute-grid { grid-template-columns: 1fr; }
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--border-subtle);
+  padding: 40px 0 60px;
+  margin-top: 40px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.footer-grid {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.footer-brand {
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.footer-links {
+  display: flex;
+  gap: 24px;
+}
+
+.footer-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  color: var(--text);
+}
+
+/* Anchor offset for sticky header */
+section[id] {
+  scroll-margin-top: 80px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <nav class="nav">
+      <a href="#" class="brand">
+        <span class="brand-mark">$</span>
+        TokenPoints
+      </a>
+      <div class="nav-links">
+        <a href="#why" class="desktop-only">Why</a>
+        <a href="#scale" class="desktop-only">Scale</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contribute">Contribute</a>
+        <a href="https://github.com/rogerio-grocers/tokenpoints" class="github-link">GitHub →</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero" style="border-top: none;">
+    <div class="container">
+      <h1>
+        <span class="strike">Story points</span><br>
+        are dead.
+      </h1>
+      <p class="lede">
+        A framework for estimating software work in <strong>dollars of LLM inference</strong> — not hours, not abstract points. Honest, falsifiable, calibrated to 2026.
+      </p>
+      <div class="ctas">
+        <a href="https://github.com/rogerio-grocers/tokenpoints" class="btn btn-primary">
+          View on GitHub →
+        </a>
+        <a href="#scale" class="btn btn-secondary">
+          See the sizing scale
+        </a>
+      </div>
+      <div class="meta-line">
+        <span>● v0.1 — open source</span>
+        <span>● CC BY 4.0</span>
+        <span>● Community-driven</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY -->
+  <section id="why">
+    <div class="container">
+      <div class="section-label">The problem</div>
+      <h2 class="section-title">Hours lied. Story points were a costume.</h2>
+      <div class="section-intro">
+        <p>For 20 years we estimated software in points — an abstract, unfalsifiable unit invented to dodge the obvious failures of hour estimates. It worked, sort of, when humans wrote every line of code.</p>
+        <p>That world is gone. In 2026, agents write the first draft of most production code. The bottleneck is no longer "how long will a developer type this?" — it's <em>"how many turns of inference, with which model, against which codebase, will it take to ship?"</em></p>
+        <p>That question has a <strong>real answer in dollars</strong>. The token cost is on the API invoice every month. Ignored. TokenPoints is a planning vocabulary built around using it.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCALE -->
+  <section id="scale">
+    <div class="container">
+      <div class="section-label">The framework</div>
+      <h2 class="section-title">A sizing scale anchored in USD.</h2>
+      <p class="section-intro">
+        Five buckets, plus a "spike first" escape hatch for unknown work. The numbers are starting anchors — every team recalibrates with its own data after two sprints.
+      </p>
+
+      <div class="scale">
+        <div class="scale-row head">
+          <div>Size</div>
+          <div>Pattern</div>
+          <div>Cost (USD)</div>
+        </div>
+        <div class="scale-row">
+          <div class="size size-XS">XS</div>
+          <div class="pattern">Pinpoint edit, autocomplete-heavy</div>
+          <div class="cost">&lt; $1</div>
+        </div>
+        <div class="scale-row">
+          <div class="size size-S">S</div>
+          <div class="pattern">Single-file feature or bug, 5–15 turns</div>
+          <div class="cost">$1 – $8</div>
+        </div>
+        <div class="scale-row">
+          <div class="size size-M">M</div>
+          <div class="pattern">Multi-file feature, 15–40 turns</div>
+          <div class="cost">$8 – $40</div>
+        </div>
+        <div class="scale-row">
+          <div class="size size-L">L</div>
+          <div class="pattern">Refactor, deep debug, cross-module</div>
+          <div class="cost">$40 – $160</div>
+        </div>
+        <div class="scale-row">
+          <div class="size size-XL">XL</div>
+          <div class="pattern">Architectural change, multi-system</div>
+          <div class="cost">$160 – $400</div>
+        </div>
+        <div class="scale-row">
+          <div class="size size-Q">??</div>
+          <div class="pattern">Spike first — investigate before sizing</div>
+          <div class="cost">time-boxed</div>
+        </div>
+      </div>
+
+      <p class="scale-note">
+        Anything above XL must be decomposed. If you can't decompose it, you don't understand it yet — that's a spike.
+      </p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="container">
+      <div class="section-label">Questions</div>
+      <h2 class="section-title">FAQ</h2>
+      <p class="section-intro">
+        Real questions from the community. If yours isn't here, <a href="https://github.com/rogerio-grocers/tokenpoints/issues/new" style="color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent-bg);">open an issue</a>.
+      </p>
+
+      <div class="faq-item">
+        <div class="faq-q">Token usage varies wildly between runs. How can you estimate it?</div>
+        <div class="faq-a">
+          The framework doesn't try to predict cost exactly. It gives teams a unit to track variance against. A task that varies 30x between runs is telling you something story points hid: the work has hidden complexity. <strong>Variance is the signal, not the noise.</strong>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Different models have different prices. How does the framework handle that?</div>
+        <div class="faq-a">
+          With an explicit model multiplier baked in at estimation. Opus is roughly 5x Sonnet on input; Haiku roughly 0.2x. Calibration absorbs the rest based on your team's actual model mix. The methodology is universal — the multipliers are local to your context and the current pricing.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Is this only useful for large (XL) features?</div>
+        <div class="faq-a">
+          No. The headline isn't the absolute dollar amount — it's the <strong>variance between estimate and actual</strong>. A $4 task that lands at $20 tells you what story points hid. Even XS tasks accumulate calibration data that compounds over sprints.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Who calculates the cost — a human or an AI?</div>
+        <div class="faq-a">
+          Neither, manually. Your tooling already does it. Claude Code, Cursor, Aider, Copilot, the API consoles — they all log tokens per session. You read the number at PR-merge time and drop it in your tracking sheet. <strong>~30 seconds of overhead per task.</strong> The data collection is essentially free.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Doesn't this only work after a tech spec exists?</div>
+        <div class="faq-a">
+          Correct. That's exactly what the <code>??</code> size is for. If you can't decompose the work, you don't know its shape yet — forcing a number is fiction. Time-box a spike, produce sized sub-tasks, then estimate. Spike-first is the framework's release valve for genuine uncertainty.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Why not just budget at the project level (CapEx-style)?</div>
+        <div class="faq-a">
+          The framework supports that — sprint capacity is a budget cap. The per-task layer just zooms in so you can investigate variance, which project-level budgets hide. <strong>Both work together.</strong> CapEx-style budgeting tells you <em>how much</em>; TokenPoints tells you <em>where it went and why</em>.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Can managers weaponize this for individual performance reviews?</div>
+        <div class="faq-a">
+          Yes — and that's the framework's biggest risk. <strong>The manifesto explicitly forbids it.</strong> Comparing $/task between developers is the modern lines-of-code: it will be gamed, it will damage trust, and it measures the wrong thing. This is a hard rule, defended actively. Aggregate at the team level only.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">How is this different from FinOps for engineering?</div>
+        <div class="faq-a">
+          FinOps tracks aggregate spend for finance reporting. TokenPoints connects spend to <em>tasks for planning</em>, not just reporting after the fact. They're complementary — a calibrated TokenPoints practice generates the per-task data that makes engineering FinOps actually meaningful.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Does this work if my team uses OpenAI, Gemini, or other providers?</div>
+        <div class="faq-a">
+          Yes. The framework is provider-agnostic. Substitute the model premium multipliers for your provider's pricing. The sizing scale, calibration playbook, and tracking templates work identically. Calibration absorbs the rest.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">What if my team isn't using agents yet?</div>
+        <div class="faq-a">
+          Then this framework solves a problem you don't have. Use whatever you used before. TokenPoints is only useful in proportion to how much of your work is actually agent-driven. <strong>Honest answer:</strong> if you're sub-30%, story points or hours are still fine.
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CONTRIBUTE -->
+  <section id="contribute">
+    <div class="container">
+      <div class="section-label">Get involved</div>
+      <h2 class="section-title">Three ways to contribute.</h2>
+      <p class="section-intro">
+        TokenPoints is v0.1 and community-driven. The most valuable thing you can give back is real data from your team.
+      </p>
+
+      <div class="contribute-grid">
+        <a href="https://github.com/rogerio-grocers/tokenpoints/issues/2" class="contribute-card">
+          <span class="icon">📊</span>
+          <h3>Share calibration data</h3>
+          <p>Anonymized aggregate numbers from your team. The most valuable contribution — turns this from one person's idea into an empirical reference.</p>
+          <span class="arrow">Open issue →</span>
+        </a>
+
+        <a href="https://github.com/rogerio-grocers/tokenpoints/issues/1" class="contribute-card">
+          <span class="icon">🗳</span>
+          <h3>Vote on the name</h3>
+          <p>TokenPoints, TASK$, Cost-Anchored Sizing, or something better? The name is open until ~30 votes. Drop a number and a sentence.</p>
+          <span class="arrow">Cast your vote →</span>
+        </a>
+
+        <a href="https://github.com/rogerio-grocers/tokenpoints/issues/3" class="contribute-card">
+          <span class="icon">🌐</span>
+          <h3>Translate</h3>
+          <p>PT-BR, ES, FR, DE, JP — make the framework accessible to non-English teams. Good first issue, no architectural decisions required.</p>
+          <span class="arrow">Pick a language →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">TokenPoints</div>
+        <div>v0.1 · CC BY 4.0 · Created by <a href="https://github.com/rogerio-grocers" style="color: inherit;">Rogério</a></div>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/rogerio-grocers/tokenpoints">GitHub</a>
+        <a href="https://github.com/rogerio-grocers/tokenpoints/blob/main/MANIFESTO.md">Manifesto</a>
+        <a href="https://github.com/rogerio-grocers/tokenpoints/blob/main/LICENSE">License</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
