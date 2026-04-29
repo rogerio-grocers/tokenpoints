@@ -1,5 +1,7 @@
 # O Manifesto TokenPoints
 
+*Read this in [English](MANIFESTO.md).*
+
 > Story points estão mortos. Longa vida aos TokenPoints.
 
 Por duas décadas, equipes de software estimaram trabalho em story points — uma unidade abstrata e não falseável inventada para contornar os fracassos óbvios das estimativas em horas. Funcionou, mais ou menos, quando humanos escreviam cada linha de código.
