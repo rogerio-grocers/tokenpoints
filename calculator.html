@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Project your AI inference cost vs. payroll. See where the numbers go, and what your CFO is going to ask in 12 months.">
+<meta property="og:title" content="TokenPoints — AI Cost vs. Payroll Calculator">
+<meta property="og:description" content="Project your team's AI inference cost over 12–24 months. Compare to payroll. See the layoff math nobody wants to put on a slide.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://rogerio-grocers.github.io/tokenpoints/calculator.html">
+<meta name="twitter:card" content="summary_large_image">
+<title>AI Cost vs. Payroll Calculator — TokenPoints</title>
+
+<style>
+:root {
+  --bg: #ffffff;
+  --bg-subtle: #fafafa;
+  --text: #0a0a0a;
+  --text-muted: #525252;
+  --text-faint: #a3a3a3;
+  --border: #e5e5e5;
+  --border-subtle: #f0f0f0;
+  --accent: #16a34a;
+  --accent-bg: #f0fdf4;
+  --warn: #ea580c;
+  --warn-bg: #fff7ed;
+  --danger: #dc2626;
+  --danger-bg: #fef2f2;
+  --code-bg: #f5f5f5;
+  --shadow: 0 1px 3px rgba(0,0,0,0.04);
+  --radius: 8px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Header (same as index.html) */
+header {
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 20px 0;
+  position: sticky;
+  top: 0;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 50;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 17px;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: -0.01em;
+}
+
+.brand-mark {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  line-height: 26px;
+  text-align: center;
+  background: var(--accent);
+  color: white;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+}
+
+.nav-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 15px;
+  transition: color 0.15s;
+}
+
+.nav-links a:hover { color: var(--text); }
+
+.nav-links .github-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: var(--text);
+  color: white;
+  border-radius: var(--radius);
+  font-weight: 500;
+  font-size: 14px;
+  transition: opacity 0.15s;
+}
+
+.nav-links .github-link:hover { opacity: 0.85; color: white; }
+
+@media (max-width: 640px) {
+  .nav-links { gap: 16px; }
+  .nav-links .desktop-only { display: none; }
+}
+
+/* Page header */
+.page-head {
+  padding: 60px 0 30px;
+}
+
+.page-head .section-label {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.page-head h1 {
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 18px;
+}
+
+.page-head .lede {
+  font-size: 19px;
+  color: var(--text-muted);
+  line-height: 1.55;
+  max-width: 680px;
+}
+
+@media (max-width: 640px) {
+  .page-head { padding: 36px 0 20px; }
+  .page-head h1 { font-size: 32px; }
+  .page-head .lede { font-size: 17px; }
+}
+
+/* Calculator layout */
+.calc-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin: 30px 0 60px;
+}
+
+@media (max-width: 820px) {
+  .calc-wrap { grid-template-columns: 1fr; }
+}
+
+.calc-panel {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  background: var(--bg);
+}
+
+.panel-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 16px;
+}
+
+/* Form */
+.field {
+  margin-bottom: 20px;
+}
+
+.field:last-child { margin-bottom: 0; }
+
+.field label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.field .hint {
+  font-size: 12px;
+  color: var(--text-faint);
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.field-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.field-input .prefix,
+.field-input .suffix {
+  position: absolute;
+  font-size: 14px;
+  color: var(--text-faint);
+  pointer-events: none;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+.field-input .prefix { left: 12px; }
+.field-input .suffix { right: 12px; }
+
+.field input[type="number"] {
+  width: 100%;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 15px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  transition: border-color 0.15s;
+  -moz-appearance: textfield;
+}
+
+.field input[type="number"]::-webkit-outer-spin-button,
+.field input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.field input[type="number"]:focus {
+  outline: none;
+  border-color: var(--text);
+}
+
+.field-input.has-prefix input { padding-left: 28px; }
+.field-input.has-suffix input { padding-right: 36px; }
+
+.preset-btns {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.preset-btn {
+  font-size: 12px;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-subtle);
+  color: var(--text-muted);
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.preset-btn:hover {
+  border-color: var(--text);
+  color: var(--text);
+}
+
+.preset-btn.active {
+  background: var(--text);
+  color: white;
+  border-color: var(--text);
+}
+
+/* Results */
+.result-block {
+  margin-bottom: 22px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.result-block:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.result-block .label {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.result-block .value {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+.result-block .sub {
+  font-size: 13px;
+  color: var(--text-faint);
+  margin-top: 4px;
+}
+
+.result-block.flag-warn .value { color: var(--warn); }
+.result-block.flag-danger .value { color: var(--danger); }
+
+.headline-result {
+  background: var(--accent-bg);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin-bottom: 22px;
+  border-left: 3px solid var(--accent);
+}
+
+.headline-result.flag-warn {
+  background: var(--warn-bg);
+  border-left-color: var(--warn);
+}
+
+.headline-result.flag-danger {
+  background: var(--danger-bg);
+  border-left-color: var(--danger);
+}
+
+.headline-result .label {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.headline-result .text {
+  font-size: 17px;
+  color: var(--text);
+  line-height: 1.45;
+}
+
+.headline-result .text strong {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-weight: 700;
+}
+
+/* Methodology */
+.methodology {
+  padding: 50px 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.methodology h2 {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin-bottom: 20px;
+}
+
+.methodology h3 {
+  font-size: 17px;
+  font-weight: 600;
+  margin-top: 28px;
+  margin-bottom: 8px;
+}
+
+.methodology p {
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.methodology ul {
+  margin: 12px 0 12px 20px;
+  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.methodology code {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  background: var(--code-bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.92em;
+  color: var(--text);
+}
+
+.methodology a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent-bg);
+}
+
+.methodology a:hover { border-bottom-color: var(--accent); }
+
+.sources {
+  margin-top: 24px;
+  padding: 20px;
+  background: var(--bg-subtle);
+  border-radius: var(--radius);
+  border: 1px solid var(--border-subtle);
+}
+
+.sources h3 { margin-top: 0; }
+
+.sources ul { margin: 8px 0 0 20px; }
+
+.sources li { margin-bottom: 6px; font-size: 14px; }
+
+.disclaimer {
+  margin-top: 24px;
+  padding: 16px 20px;
+  background: var(--warn-bg);
+  border-left: 3px solid var(--warn);
+  border-radius: 4px;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.55;
+}
+
+.disclaimer strong { font-weight: 700; }
+
+/* CTA bottom */
+.cta-section {
+  padding: 50px 0 60px;
+  border-top: 1px solid var(--border-subtle);
+  text-align: center;
+}
+
+.cta-section h2 {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+
+.cta-section p {
+  color: var(--text-muted);
+  margin-bottom: 24px;
+  font-size: 16px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: var(--radius);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 15px;
+  transition: all 0.15s;
+  border: 1px solid transparent;
+}
+
+.btn-primary {
+  background: var(--text);
+  color: white;
+}
+
+.btn-primary:hover { opacity: 0.88; }
+
+/* Footer (same as index.html) */
+footer {
+  border-top: 1px solid var(--border-subtle);
+  padding: 40px 0 60px;
+  margin-top: 0;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.footer-grid {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.footer-brand {
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.footer-links {
+  display: flex;
+  gap: 24px;
+}
+
+.footer-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.footer-links a:hover { color: var(--text); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <nav class="nav">
+      <a href="index.html" class="brand">
+        <span class="brand-mark">$</span>
+        TokenPoints
+      </a>
+      <div class="nav-links">
+        <a href="index.html#scale" class="desktop-only">Scale</a>
+        <a href="index.html#faq" class="desktop-only">FAQ</a>
+        <a href="index.html#contribute">Contribute</a>
+        <a href="https://github.com/rogerio-grocers/tokenpoints" class="github-link">GitHub →</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <div class="page-head container">
+    <div class="section-label">Calculator</div>
+    <h1>The AI cost vs. payroll math your CFO is about to do.</h1>
+    <p class="lede">
+      Project your team's AI inference spend over 12–24 months at realistic adoption-growth rates. Compare it to payroll. See the layoff arithmetic that already drove $700B in big-tech capex commitments and 38,000 AI-attributed cuts in Q1 2026 alone.
+    </p>
+  </div>
+
+  <div class="container">
+    <div class="calc-wrap">
+
+      <!-- INPUTS -->
+      <div class="calc-panel">
+        <div class="panel-label">Your team</div>
+
+        <div class="field">
+          <label for="devs">Number of developers</label>
+          <div class="hint">Devs actively using AI tools (Copilot, Cursor, Claude Code, Aider, etc.)</div>
+          <div class="field-input">
+            <input type="number" id="devs" value="50" min="1" max="100000">
+          </div>
+          <div class="preset-btns" data-target="devs">
+            <button class="preset-btn" data-value="10">Startup (10)</button>
+            <button class="preset-btn active" data-value="50">Scaleup (50)</button>
+            <button class="preset-btn" data-value="500">Enterprise (500)</button>
+            <button class="preset-btn" data-value="5000">Big Tech (5k)</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="cost">Inference cost per dev / month, today</label>
+          <div class="hint">Average API spend per active dev right now. If you don't know, $200 is the 2026 mid-range.</div>
+          <div class="field-input has-prefix has-suffix">
+            <span class="prefix">$</span>
+            <input type="number" id="cost" value="200" min="0" max="10000" step="10">
+            <span class="suffix">/mo</span>
+          </div>
+          <div class="preset-btns" data-target="cost">
+            <button class="preset-btn" data-value="50">Light ($50)</button>
+            <button class="preset-btn active" data-value="200">Mid ($200)</button>
+            <button class="preset-btn" data-value="600">Heavy ($600)</button>
+            <button class="preset-btn" data-value="2000">Power ($2k)</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="growth">Monthly usage growth rate</label>
+          <div class="hint">How much per-dev usage compounds month-over-month as adoption deepens. Industry: +320% over 24 months ≈ +6%/mo conservative, +15%/mo aggressive.</div>
+          <div class="field-input has-suffix">
+            <input type="number" id="growth" value="10" min="0" max="100" step="1">
+            <span class="suffix">% / mo</span>
+          </div>
+          <div class="preset-btns" data-target="growth">
+            <button class="preset-btn" data-value="3">Slow (3%)</button>
+            <button class="preset-btn active" data-value="10">Industry (10%)</button>
+            <button class="preset-btn" data-value="20">Aggressive (20%)</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="salary">Loaded salary per dev / year</label>
+          <div class="hint">Salary + benefits + taxes + overhead. Default is US-loaded; ~R$300k for senior BR-loaded.</div>
+          <div class="field-input has-prefix has-suffix">
+            <span class="prefix">$</span>
+            <input type="number" id="salary" value="180000" min="0" max="1000000" step="5000">
+            <span class="suffix">/yr</span>
+          </div>
+          <div class="preset-btns" data-target="salary">
+            <button class="preset-btn" data-value="60000">BR ($60k)</button>
+            <button class="preset-btn" data-value="120000">EU ($120k)</button>
+            <button class="preset-btn active" data-value="180000">US ($180k)</button>
+            <button class="preset-btn" data-value="280000">SF ($280k)</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="horizon">Projection horizon</label>
+          <div class="hint">How far out to project. CFOs typically plan 12–24 months for opex commitments.</div>
+          <div class="field-input has-suffix">
+            <input type="number" id="horizon" value="12" min="1" max="60" step="1">
+            <span class="suffix">months</span>
+          </div>
+          <div class="preset-btns" data-target="horizon">
+            <button class="preset-btn" data-value="6">6 mo</button>
+            <button class="preset-btn active" data-value="12">12 mo</button>
+            <button class="preset-btn" data-value="24">24 mo</button>
+            <button class="preset-btn" data-value="36">36 mo</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESULTS -->
+      <div class="calc-panel">
+        <div class="panel-label">The numbers</div>
+
+        <div class="headline-result" id="headline">
+          <div class="label">Headline</div>
+          <div class="text" id="headline-text">…</div>
+        </div>
+
+        <div class="result-block">
+          <div class="label">Today's monthly AI spend (team total)</div>
+          <div class="value" id="r-today">—</div>
+          <div class="sub" id="r-today-sub">— per dev × — devs</div>
+        </div>
+
+        <div class="result-block" id="r-future-block">
+          <div class="label">Monthly AI spend at end of horizon</div>
+          <div class="value" id="r-future">—</div>
+          <div class="sub" id="r-future-sub">—</div>
+        </div>
+
+        <div class="result-block">
+          <div class="label">Cumulative AI spend over horizon</div>
+          <div class="value" id="r-cumulative">—</div>
+          <div class="sub" id="r-cumulative-sub">—</div>
+        </div>
+
+        <div class="result-block" id="r-pct-block">
+          <div class="label">AI cost as % of payroll, end of horizon</div>
+          <div class="value" id="r-pct">—</div>
+          <div class="sub" id="r-pct-sub">—</div>
+        </div>
+
+        <div class="result-block" id="r-layoff-block">
+          <div class="label">Devs whose annual salary equals end-of-horizon AI burn</div>
+          <div class="value" id="r-layoff">—</div>
+          <div class="sub" id="r-layoff-sub">— this is the "absorb the cost via headcount" math, not a recommendation.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- METHODOLOGY -->
+  <section class="methodology">
+    <div class="container">
+      <h2>How this is calculated</h2>
+
+      <p>
+        Three inputs do most of the work: <strong>per-dev monthly cost today</strong>, <strong>monthly compounding growth rate</strong>, and <strong>horizon</strong>. The model is intentionally simple — anything more complex hides assumptions inside formulas.
+      </p>
+
+      <h3>The formula</h3>
+      <p>
+        <code>cost_at_month_n = devs × cost_today × (1 + growth)^n</code>
+      </p>
+      <p>
+        Cumulative spend is the sum across all months. Payroll uses loaded annual salary × number of devs. The "layoff equivalent" divides end-of-horizon annual AI burn by per-dev loaded salary — it's the number of devs whose payroll equals what AI is consuming.
+      </p>
+
+      <h3>Why compounding growth, not flat?</h3>
+      <p>
+        Per-token prices keep falling, but enterprise total spend keeps rising fast. Not because anyone budgeted it — because adoption keeps deepening. The same dev who used 10 turns/day in Q1 uses 30 in Q3 once they trust the tool. Then they start running background agents. Compounding growth is the empirically honest curve.
+      </p>
+
+      <h3>Why this isn't doom-mongering</h3>
+      <p>
+        The output isn't "fire everyone." It's <em>"this is the gravitational pull on opex if you don't measure."</em> Teams that calibrate per-task cost (with something like <a href="index.html">TokenPoints</a>) catch divergence early and re-allocate before it shows up as a layoff PR. Teams that don't, find out from their CFO.
+      </p>
+
+      <div class="disclaimer">
+        <strong>Important caveats.</strong> This is a planning model, not a forecast. It assumes (1) per-dev cost grows at a steady rate, (2) headcount stays flat, (3) per-token prices don't collapse 10x, (4) no productivity offsets reduce demand for new hires. Reality breaks all of these in different directions. Use this to <em>start a conversation</em>, not to make a budget commitment.
+      </div>
+
+      <div class="sources">
+        <h3>Where the defaults come from</h3>
+        <ul>
+          <li>Enterprise AI budget: <strong>$1.2M (2024) → $7M (2026)</strong>, ~6x growth — <em>AnalyticsWeek 2026 Inference Economics</em></li>
+          <li>Token prices fell <strong>280x</strong> in 24 months while enterprise AI spend rose <strong>320%</strong> — <em>Oplexa, AI Inference Cost Crisis 2026</em></li>
+          <li>Inference = <strong>85% of enterprise AI budget</strong> in 2026 — <em>same source</em></li>
+          <li><strong>Q1 2026: 78,557 tech layoffs</strong>; <strong>47.9% AI-attributed</strong> — <em>Tom's Hardware</em></li>
+          <li>Meta cut <strong>8,000 jobs</strong> in April 2026 explicitly to fund <strong>$115–135B</strong> in AI capex — <em>Axios, TheNextWeb</em></li>
+          <li>Big 4 (MSFT, GOOG, META, AMZN) AI capex 2026: <strong>~$700B</strong>, +75% YoY — <em>Fortune</em></li>
+          <li>Cursor revenue: <strong>$0 → $2B ARR in ~18 months</strong>; doubled $1B → $2B in 3 months — <em>Panto / Cursor disclosures</em></li>
+          <li>GitHub Copilot: <strong>90% of Fortune 100</strong> using as of 2025 — <em>Second Talent</em></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <h2>Don't trust this number. Measure your own.</h2>
+      <p>The default growth rate is an industry average. Your team will diverge. The whole point of TokenPoints is replacing models like this with your real per-task data.</p>
+      <a href="index.html" class="btn btn-primary">Read the framework →</a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">TokenPoints</div>
+        <div>v0.1 · CC BY 4.0 · Created by <a href="https://github.com/rogerio-grocers" style="color: inherit;">Rogério</a></div>
+      </div>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="https://github.com/rogerio-grocers/tokenpoints">GitHub</a>
+        <a href="https://github.com/rogerio-grocers/tokenpoints/blob/main/MANIFESTO.md">Manifesto</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  var inputs = {
+    devs: $('devs'),
+    cost: $('cost'),
+    growth: $('growth'),
+    salary: $('salary'),
+    horizon: $('horizon')
+  };
+
+  function fmtMoney(n) {
+    if (!isFinite(n) || isNaN(n)) return '—';
+    if (n >= 1e9) return '$' + (n / 1e9).toFixed(2) + 'B';
+    if (n >= 1e6) return '$' + (n / 1e6).toFixed(2) + 'M';
+    if (n >= 1e3) return '$' + (n / 1e3).toFixed(0) + 'k';
+    return '$' + Math.round(n).toLocaleString('en-US');
+  }
+
+  function fmtPct(n) {
+    if (!isFinite(n) || isNaN(n)) return '—';
+    if (n >= 100) return Math.round(n) + '%';
+    if (n >= 10) return n.toFixed(1) + '%';
+    return n.toFixed(2) + '%';
+  }
+
+  function fmtInt(n) {
+    if (!isFinite(n) || isNaN(n)) return '—';
+    return Math.round(n).toLocaleString('en-US');
+  }
+
+  function setFlag(el, level) {
+    el.classList.remove('flag-warn', 'flag-danger');
+    if (level === 'warn') el.classList.add('flag-warn');
+    if (level === 'danger') el.classList.add('flag-danger');
+  }
+
+  function recompute() {
+    var devs = Math.max(1, parseFloat(inputs.devs.value) || 0);
+    var cost = Math.max(0, parseFloat(inputs.cost.value) || 0);
+    var growthPct = Math.max(0, parseFloat(inputs.growth.value) || 0);
+    var salary = Math.max(0, parseFloat(inputs.salary.value) || 0);
+    var horizon = Math.max(1, parseInt(inputs.horizon.value, 10) || 1);
+
+    var g = growthPct / 100;
+    var todayMonthly = devs * cost;
+
+    // End-of-horizon monthly burn
+    var futureMonthly = todayMonthly * Math.pow(1 + g, horizon);
+
+    // Cumulative across horizon (sum of geometric series, monthly)
+    var cumulative;
+    if (g === 0) {
+      cumulative = todayMonthly * horizon;
+    } else {
+      cumulative = todayMonthly * (Math.pow(1 + g, horizon + 1) - (1 + g)) / g;
+    }
+
+    // Annual payroll
+    var payrollAnnual = devs * salary;
+
+    // AI annual run rate at end of horizon
+    var aiAnnualEnd = futureMonthly * 12;
+
+    // Pct of payroll
+    var pctOfPayroll = payrollAnnual > 0 ? (aiAnnualEnd / payrollAnnual) * 100 : 0;
+
+    // Layoff equivalent (devs whose payroll == AI annual burn end of horizon)
+    var layoffEquivalent = salary > 0 ? aiAnnualEnd / salary : 0;
+
+    // Render
+    $('r-today').textContent = fmtMoney(todayMonthly);
+    $('r-today-sub').textContent = fmtMoney(cost) + '/dev × ' + fmtInt(devs) + ' devs';
+
+    $('r-future').textContent = fmtMoney(futureMonthly);
+    var multiple = todayMonthly > 0 ? futureMonthly / todayMonthly : 0;
+    $('r-future-sub').textContent = multiple.toFixed(1) + 'x today, after ' + horizon + ' months at ' + growthPct + '%/mo';
+
+    $('r-cumulative').textContent = fmtMoney(cumulative);
+    $('r-cumulative-sub').textContent = 'Total spend across the next ' + horizon + ' months';
+
+    $('r-pct').textContent = fmtPct(pctOfPayroll);
+    $('r-pct-sub').textContent = 'AI annual run rate (' + fmtMoney(aiAnnualEnd) + ') ÷ team payroll (' + fmtMoney(payrollAnnual) + ')';
+
+    $('r-layoff').textContent = fmtInt(layoffEquivalent) + ' devs';
+    $('r-layoff-sub').textContent = 'This is the "absorb the cost via headcount" math, not a recommendation.';
+
+    // Flags
+    setFlag($('r-pct-block'), pctOfPayroll >= 30 ? 'danger' : pctOfPayroll >= 10 ? 'warn' : null);
+    setFlag($('r-layoff-block'), layoffEquivalent / devs >= 0.30 ? 'danger' : layoffEquivalent / devs >= 0.10 ? 'warn' : null);
+    setFlag($('r-future-block'), multiple >= 5 ? 'danger' : multiple >= 2 ? 'warn' : null);
+
+    // Headline
+    var headlineEl = $('headline');
+    var textEl = $('headline-text');
+    var pctRounded = pctOfPayroll < 1 ? pctOfPayroll.toFixed(2) : pctOfPayroll < 10 ? pctOfPayroll.toFixed(1) : Math.round(pctOfPayroll);
+
+    if (pctOfPayroll >= 30) {
+      headlineEl.className = 'headline-result flag-danger';
+      textEl.innerHTML = 'In ' + horizon + ' months, AI inference will consume <strong>' + pctRounded + '%</strong> of your payroll — equivalent to <strong>' + fmtInt(layoffEquivalent) + ' devs</strong> of fully-loaded salary. This is unsustainable without offsetting opex cuts.';
+    } else if (pctOfPayroll >= 10) {
+      headlineEl.className = 'headline-result flag-warn';
+      textEl.innerHTML = 'In ' + horizon + ' months, AI inference reaches <strong>' + pctRounded + '%</strong> of payroll (~<strong>' + fmtInt(layoffEquivalent) + ' devs</strong> of loaded salary). Most CFOs flag anything above 10% as a budget conversation.';
+    } else if (pctOfPayroll >= 3) {
+      headlineEl.className = 'headline-result';
+      textEl.innerHTML = 'In ' + horizon + ' months, AI inference reaches <strong>' + pctRounded + '%</strong> of payroll. Manageable today, but compounding — re-run with a 24-month horizon to see where it lands.';
+    } else {
+      headlineEl.className = 'headline-result';
+      textEl.innerHTML = 'In ' + horizon + ' months, AI inference stays under <strong>' + pctRounded + '%</strong> of payroll. Either growth is conservative or your team is early in adoption. Try a higher growth rate to stress-test.';
+    }
+  }
+
+  // Wire input listeners
+  Object.keys(inputs).forEach(function (k) {
+    inputs[k].addEventListener('input', recompute);
+  });
+
+  // Wire preset buttons
+  document.querySelectorAll('.preset-btns').forEach(function (group) {
+    var target = group.getAttribute('data-target');
+    group.querySelectorAll('.preset-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var v = btn.getAttribute('data-value');
+        inputs[target].value = v;
+        group.querySelectorAll('.preset-btn').forEach(function (b) {
+          b.classList.remove('active');
+        });
+        btn.classList.add('active');
+        recompute();
+      });
+    });
+  });
+
+  // Initial render
+  recompute();
+})();
+</script>
+
+</body>
+</html>
